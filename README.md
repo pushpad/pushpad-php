@@ -16,6 +16,22 @@ Features:
 
 ## Installation
 
+### Composer
+
+You can install the bindings via [Composer](http://getcomposer.org/). Run the following command:
+
+```bash
+composer require pushpad/pushpad-php
+```
+
+To use the bindings, use Composer's autoload:
+
+```php
+require_once('vendor/autoload.php');
+```
+
+### Manual Installation
+
 Download the latest version of this library:
 
     $ git clone https://github.com/pushpad/pushpad-php.git
