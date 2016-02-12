@@ -1,0 +1,25 @@
+{
+  "name": "pushpad/pushpad-php",
+  "description": "Pushpad PHP Library",
+  "keywords": [
+    "pushpad",
+    "push notifications",
+    "api"
+  ],
+  "homepage": "https://pushpad.xyz",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Pushpad",
+      "homepage": "https://pushpad.xyz"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.3",
+    "ext-curl": "*",
+    "ext-json": "*"
+  },
+  "autoload": {
+    "psr-4": { "Pushpad\\" : "lib/" }
+  }
+}
