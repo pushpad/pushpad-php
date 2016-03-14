@@ -20,11 +20,11 @@ class Notification {
   }
 
   public function broadcast($options = array()) {
-    $this->deliver($this->req_body(), $options);
+    return $this->deliver($this->req_body(), $options);
   }
 
   public function deliver_to($uids, $options = array()) {
-    $this->deliver($this->req_body($uids), $options);
+    return $this->deliver($this->req_body($uids), $options);
   }
 
   private function deliver($req_body, $options = array()) {
@@ -40,9 +40,8 @@ class Notification {
     if ($res == false) throw new NotificationDeliveryError("cURL request error");
     $status_code = curl_getinfo($req, CURLINFO_HTTP_CODE);
     curl_close($req);
-    list($header, $body) = explode("\r\n\r\n", $res, 2);
-    if ($status_code != '201') throw new NotificationDeliveryError("Response $status_code: $body");
-    return json_decode($body);
+    if ($status_code != '201') throw new NotificationDeliveryError("Response $status_code: $res");
+    return json_decode($res, true);
   }
 
   private function req_headers() {
