@@ -1,18 +1,18 @@
-# Pushpad: web push notifications
+# Pushpad: real push notifications for websites
 
-Add web push notifications to your web app using third-party service [Pushpad](https://pushpad.xyz).
+Add native push notifications to your web app using [Pushpad](https://pushpad.xyz).
+
+Features:
+
+- notifications are delivered even when the user is not on your website
+- users don't need to install any app or plugin
+- you can target specific users or send bulk notifications
 
 Currently push notifications work on the following browsers:
 
 - Chrome (Desktop and Android)
 - Firefox (44+)
 - Safari
-
-Features:
-
-- users don't need to install any app or plugin 
-- notifications are delivered even when the user is not on your website
-- you can target specific users or send bulk notifications
 
 ## Installation
 
@@ -43,9 +43,9 @@ require_once('path/to/pushpad-php/init.php');
 
 ```
 
-## Usage
+## Getting started
 
-First you need to sign up to Pushpad and create a project there. It takes 1 minute.
+First you need to sign up to Pushpad and create a project there.
 
 Then set your authentication credentials:
 
@@ -56,6 +56,20 @@ Pushpad\Pushpad::$project_id = 123; # set it here or pass it as a param to metho
 
 `auth_token` can be found in the user account settings. 
 `project_id` can be found in the project settings on Pushpad. A project is a list of subscriptions. You can set it globally or pass it as a param to methods if your app uses multiple lists (e.g. `Pushpad\Pushpad::path_for($current_user_id, array('project_id' => 123))`, `$notification->deliver_to(user_id, array('project_id' => 123))`).
+
+## Collecting user subscriptions
+
+### Custom API
+
+Read the [docs](https://pushpad.xyz/docs#custom_api_docs).
+
+If you need to generate the HMAC signature for the `uid` you can use this helper:
+
+```php
+Pushpad\Pushpad::signature_for($current_user_id);
+```
+
+### Simple API
 
 Let users subscribe to your push notifications: 
 
@@ -69,7 +83,9 @@ Let users subscribe to your push notifications:
 
 When a user clicks the link is sent to Pushpad, automatically asked to receive push notifications and redirected back to your website.
 
-Then you can send notifications:
+## Sending notifications
+
+After you have collected the user subscriptions you can send them push notifications:
 
 ```php
 $notification = new Pushpad\Notification(array(
