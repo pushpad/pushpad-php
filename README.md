@@ -89,8 +89,8 @@ When a user clicks the link is sent to Pushpad, automatically asked to receive p
 
 ```php
 $notification = new Pushpad\Notification(array(
-  'body' => "Hello world!",
-  'title' => "Website Name", # optional, defaults to your project name
+  'body' => "Hello world!", # max 90 characters
+  'title' => "Website Name", # optional, defaults to your project name, max 30 characters
   'target_url' => "http://example.com" # optional, defaults to your project website
 ));
 
