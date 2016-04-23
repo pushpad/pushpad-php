@@ -94,9 +94,21 @@ $notification = new Pushpad\Notification(array(
   'target_url' => "http://example.com" # optional, defaults to your project website
 ));
 
+# deliver to a user
 $notification->deliver_to($user_id);
+
+# deliver to a group of users
 $notification->deliver_to($user_ids);
-$notification->broadcast(); # deliver to everyone
+
+# deliver to some users only if they have a given preference
+# e.g. only $users who have a interested in "events" will be reached
+$notification->deliver_to($users, ["tags" => ["events"]]);
+
+# deliver to segments
+$notification->broadcast(["tags" => ["segment1", "segment2"]]);
+
+# deliver to everyone
+$notification->broadcast(); 
 # => array('scheduled' => 12)
 ```
 

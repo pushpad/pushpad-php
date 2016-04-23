@@ -20,11 +20,11 @@ class Notification {
   }
 
   public function broadcast($options = array()) {
-    return $this->deliver($this->req_body(), $options);
+    return $this->deliver($this->req_body(null, $options['tags']), $options);
   }
 
   public function deliver_to($uids, $options = array()) {
-    return $this->deliver($this->req_body($uids), $options);
+    return $this->deliver($this->req_body($uids, $options['tags']), $options);
   }
 
   private function deliver($req_body, $options = array()) {
@@ -53,7 +53,7 @@ class Notification {
     );
   }
 
-  private function req_body($uids = null) {
+  private function req_body($uids = null, $tags = null) {
     $body = array(
       'notification' => array(
         'body' => $this->body,
@@ -62,6 +62,7 @@ class Notification {
       )
     );
     if (isset($uids)) $body['uids'] = $uids;
+    if (isset($tags)) $body['tags'] = $tags;
     return json_encode($body);
   }
 }
