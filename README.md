@@ -59,11 +59,11 @@ Pushpad\Pushpad::$project_id = 123; # set it here or pass it as a param to metho
 
 ## Collecting user subscriptions to push notifications
 
-Pushpad offers two different ways to collect subscriptions. [Learn more](https://pushpad.xyz/docs#simple_vs_custom_api_docs)
+Pushpad offers two different products. [Learn more](https://pushpad.xyz/docs)
 
-### Custom API
+### Pushpad Pro
 
-Choose the Custom API if you want to use Javascript for a seamless integration. [Read the docs](https://pushpad.xyz/docs#custom_api_docs)
+Choose Pushpad Pro if you want to use Javascript for a seamless integration. [Read the docs](https://pushpad.xyz/docs/pushpad_pro_getting_started)
 
 If you need to generate the HMAC signature for the `uid` you can use this helper:
 
@@ -71,7 +71,7 @@ If you need to generate the HMAC signature for the `uid` you can use this helper
 Pushpad\Pushpad::signature_for($current_user_id);
 ```
 
-### Simple API
+### Pushpad Express
 
 Add a link to let users subscribe to push notifications: 
 
