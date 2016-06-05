@@ -37,7 +37,7 @@ class Notification {
     curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($req, CURLOPT_HTTPHEADER, $this->req_headers());
     $res = curl_exec($req);
-    if ($res == false) throw new NotificationDeliveryError("cURL request error");
+    if ($res === false) throw new NotificationDeliveryError("cURL request error");
     $status_code = curl_getinfo($req, CURLINFO_HTTP_CODE);
     curl_close($req);
     if ($status_code != '201') throw new NotificationDeliveryError("Response $status_code: $res");
