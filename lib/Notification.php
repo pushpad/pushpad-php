@@ -12,11 +12,15 @@ class Notification {
   public $body;
   public $title;
   public $target_url;
+  public $icon_url;
+  public $ttl;
 
   function __construct($options = array()) {
     if (isset($options['body'])) $this->body = $options['body'];
     if (isset($options['title'])) $this->title = $options['title'];
     if (isset($options['target_url'])) $this->target_url = $options['target_url'];
+    if (isset($options['icon_url'])) $this->icon_url = $options['icon_url'];
+    if (isset($options['ttl'])) $this->ttl = $options['ttl'];
   }
 
   public function broadcast($options = array()) {
@@ -58,7 +62,9 @@ class Notification {
       'notification' => array(
         'body' => $this->body,
         'title' => $this->title,
-        'target_url' => $this->target_url
+        'target_url' => $this->target_url,
+        'icon_url' => $this->icon_url,
+        'ttl' => $this->ttl
       )
     );
     if (isset($uids)) $body['uids'] = $uids;
