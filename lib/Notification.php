@@ -28,6 +28,9 @@ class Notification {
   }
 
   public function deliver_to($uids, $options = array()) {
+    if (!isset($uids)) {
+      $uids = array(); // prevent broadcasting
+    }
     return $this->deliver($this->req_body($uids, $options['tags']), $options);
   }
 
