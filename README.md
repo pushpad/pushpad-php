@@ -111,6 +111,11 @@ $notification->deliver_to($users, ["tags" => ["events"]]);
 # e.g. any subscriber that has the tag "segment1" OR "segment2"
 $notification->broadcast(["tags" => ["segment1", "segment2"]]);
 
+# you can use boolean expressions 
+# they must be in the disjunctive normal form (without parenthesis)
+$notification->broadcast(["tags" => ["zip_code:28865 && !optout:local_events || friend_of:Organizer123"]]);
+$notification->deliver_to($users, ["tags" => ["tag1 && tag2", "tag3"]]); # equal to "tag1 && tag2 || tag3"
+
 # deliver to everyone
 $notification->broadcast(); 
 ```
