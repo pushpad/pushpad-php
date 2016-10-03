@@ -72,6 +72,9 @@ class Notification {
     );
     if (isset($uids)) $body['uids'] = $uids;
     if (isset($tags)) $body['tags'] = $tags;
-    return json_encode($body);
+    $json = json_encode($body);
+    if ($json == false)
+      throw new \Exception('An error occurred while encoding the following request into JSON: ' . var_export($body, true));
+    return $json;
   }
 }
