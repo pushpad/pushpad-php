@@ -13,14 +13,24 @@ class Notification {
   public $title;
   public $target_url;
   public $icon_url;
+  public $image_url;
   public $ttl;
+  public $require_interaction;
+  public $custom_data;
+  public $actions;
+  public $starred;
 
   function __construct($options = array()) {
-    if (isset($options['body'])) $this->body = $options['body'];
+    $this->body = $options['body'];
     if (isset($options['title'])) $this->title = $options['title'];
     if (isset($options['target_url'])) $this->target_url = $options['target_url'];
     if (isset($options['icon_url'])) $this->icon_url = $options['icon_url'];
+    if (isset($options['image_url'])) $this->image_url = $options['image_url'];
     if (isset($options['ttl'])) $this->ttl = $options['ttl'];
+    if (isset($options['require_interaction'])) $this->require_interaction = $options['require_interaction'];
+    if (isset($options['custom_data'])) $this->custom_data = $options['custom_data'];
+    if (isset($options['actions'])) $this->actions = $options['actions'];
+    if (isset($options['starred'])) $this->starred = $options['starred'];
   }
 
   public function broadcast($options = array()) {
@@ -63,13 +73,19 @@ class Notification {
   private function req_body($uids = null, $tags = null) {
     $body = array(
       'notification' => array(
-        'body' => $this->body,
-        'title' => $this->title,
-        'target_url' => $this->target_url,
-        'icon_url' => $this->icon_url,
-        'ttl' => $this->ttl
+        'body' => $this->body
       )
     );
+    if (isset($this->title)) $body['notification']['title'] = $this->title;
+    if (isset($this->target_url)) $body['notification']['target_url'] = $this->target_url;
+    if (isset($this->icon_url)) $body['notification']['icon_url'] = $this->icon_url;
+    if (isset($this->image_url)) $body['notification']['image_url'] = $this->image_url;
+    if (isset($this->ttl)) $body['notification']['ttl'] = $this->ttl;
+    if (isset($this->require_interaction)) $body['notification']['require_interaction'] = $this->require_interaction;
+    if (isset($this->custom_data)) $body['notification']['custom_data'] = $this->custom_data;
+    if (isset($this->actions)) $body['notification']['actions'] = $this->actions;
+    if (isset($this->starred)) $body['notification']['starred'] = $this->starred;
+
     if (isset($uids)) $body['uids'] = $uids;
     if (isset($tags)) $body['tags'] = $tags;
     $json = json_encode($body);
