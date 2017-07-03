@@ -96,7 +96,7 @@ $notification = new Pushpad\Notification(array(
   'target_url' => "http://example.com", # optional, defaults to your project website
   'icon_url' => "http://example.com/assets/icon.png", # optional, defaults to the project icon
   'image_url' => "http://example.com/assets/image.png", # optional, an image to display in the notification content
-  'ttl' => 604800 # optional, drop the notification after this number of seconds if a device is offline
+  'ttl' => 604800, # optional, drop the notification after this number of seconds if a device is offline
   'require_interaction' => true, # optional, prevent Chrome on desktop from automatically closing the notification after a few seconds
   'custom_data' => "123", # optional, a string that is passed as an argument to action button callbacks
   # optional, add some action buttons to the notification
