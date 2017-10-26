@@ -109,7 +109,10 @@ $notification = new Pushpad\Notification(array(
       'action' => "myActionName" # optional
     )
   ),
-  'starred' => true # optional, bookmark the notification in the Pushpad dashboard (e.g. to highlight manual notifications)
+  'starred' => true, # optional, bookmark the notification in the Pushpad dashboard (e.g. to highlight manual notifications)
+  # optional, it can be used to create create scheduled notifications (max 5 days)
+  # see https://pushpad.xyz/docs/schedule_notifications
+  'send_at' => strtotime('2016-07-25 10:09') # use a function like strtotime or time that returns a Unix timestamp
 ));
 
 # deliver to a user

@@ -19,6 +19,7 @@ class Notification {
   public $custom_data;
   public $actions;
   public $starred;
+  public $send_at;
 
   function __construct($options = array()) {
     $this->body = $options['body'];
@@ -31,6 +32,7 @@ class Notification {
     if (isset($options['custom_data'])) $this->custom_data = $options['custom_data'];
     if (isset($options['actions'])) $this->actions = $options['actions'];
     if (isset($options['starred'])) $this->starred = $options['starred'];
+    if (isset($options['send_at'])) $this->send_at = $options['send_at'];
   }
 
   public function broadcast($options = array()) {
@@ -85,6 +87,7 @@ class Notification {
     if (isset($this->custom_data)) $body['notification']['custom_data'] = $this->custom_data;
     if (isset($this->actions)) $body['notification']['actions'] = $this->actions;
     if (isset($this->starred)) $body['notification']['starred'] = $this->starred;
+    if (isset($this->send_at)) $body['notification']['send_at'] = gmstrftime('%Y-%m-%dT%H:%M', $this->send_at);
 
     if (isset($uids)) $body['uids'] = $uids;
     if (isset($tags)) $body['tags'] = $tags;
