@@ -17,6 +17,7 @@ class Notification {
   public $ttl;
   public $require_interaction;
   public $custom_data;
+  public $custom_metrics;
   public $actions;
   public $starred;
   public $send_at;
@@ -30,6 +31,7 @@ class Notification {
     if (isset($options['ttl'])) $this->ttl = $options['ttl'];
     if (isset($options['require_interaction'])) $this->require_interaction = $options['require_interaction'];
     if (isset($options['custom_data'])) $this->custom_data = $options['custom_data'];
+    if (isset($options['custom_metrics'])) $this->custom_metrics = $options['custom_metrics'];
     if (isset($options['actions'])) $this->actions = $options['actions'];
     if (isset($options['starred'])) $this->starred = $options['starred'];
     if (isset($options['send_at'])) $this->send_at = $options['send_at'];
@@ -85,6 +87,7 @@ class Notification {
     if (isset($this->ttl)) $body['notification']['ttl'] = $this->ttl;
     if (isset($this->require_interaction)) $body['notification']['require_interaction'] = $this->require_interaction;
     if (isset($this->custom_data)) $body['notification']['custom_data'] = $this->custom_data;
+    if (isset($this->custom_metrics)) $body['notification']['custom_metrics'] = $this->custom_metrics;
     if (isset($this->actions)) $body['notification']['actions'] = $this->actions;
     if (isset($this->starred)) $body['notification']['starred'] = $this->starred;
     if (isset($this->send_at)) $body['notification']['send_at'] = gmstrftime('%Y-%m-%dT%H:%M', $this->send_at);
