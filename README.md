@@ -1,19 +1,12 @@
 # Pushpad - Web Push Notifications
  
-[Pushpad](https://pushpad.xyz) is a service for sending push notifications from your web app. It supports the **Push API** (Chrome, Firefox, Opera) and **APNs** (Safari).
+[Pushpad](https://pushpad.xyz) is a service for sending push notifications from your web app. It supports the **Push API** (Chrome, Firefox, Opera, Edge) and **APNs** (Safari).
 
 Features:
 
 - notifications are delivered even when the user is not on your website
 - users don't need to install any app or plugin
 - you can target specific users or send bulk notifications
-
-Currently push notifications work on the following browsers:
-
-- Chrome (Desktop and Android)
-- Firefox (44+)
-- Opera (42+)
-- Safari
 
 ## Installation
 
