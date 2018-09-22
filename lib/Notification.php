@@ -38,14 +38,14 @@ class Notification {
   }
 
   public function broadcast($options = array()) {
-    return $this->deliver($this->req_body(null, $options['tags']), $options);
+    return $this->deliver($this->req_body(null, isset($options['tags']) ? $options['tags'] : null), $options);
   }
 
   public function deliver_to($uids, $options = array()) {
     if (!isset($uids)) {
       $uids = array(); // prevent broadcasting
     }
-    return $this->deliver($this->req_body($uids, $options['tags']), $options);
+    return $this->deliver($this->req_body($uids, isset($options['tags']) ? $options['tags'] : null), $options);
   }
 
   private function deliver($req_body, $options = array()) {
