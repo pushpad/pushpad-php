@@ -16,6 +16,7 @@ class Notification {
   public $image_url;
   public $ttl;
   public $require_interaction;
+  public $urgent;
   public $custom_data;
   public $custom_metrics;
   public $actions;
@@ -30,6 +31,7 @@ class Notification {
     if (isset($options['image_url'])) $this->image_url = $options['image_url'];
     if (isset($options['ttl'])) $this->ttl = $options['ttl'];
     if (isset($options['require_interaction'])) $this->require_interaction = $options['require_interaction'];
+    if (isset($options['urgent'])) $this->urgent = $options['urgent'];
     if (isset($options['custom_data'])) $this->custom_data = $options['custom_data'];
     if (isset($options['custom_metrics'])) $this->custom_metrics = $options['custom_metrics'];
     if (isset($options['actions'])) $this->actions = $options['actions'];
@@ -86,6 +88,7 @@ class Notification {
     if (isset($this->image_url)) $body['notification']['image_url'] = $this->image_url;
     if (isset($this->ttl)) $body['notification']['ttl'] = $this->ttl;
     if (isset($this->require_interaction)) $body['notification']['require_interaction'] = $this->require_interaction;
+    if (isset($this->urgent)) $body['notification']['urgent'] = $this->urgent;
     if (isset($this->custom_data)) $body['notification']['custom_data'] = $this->custom_data;
     if (isset($this->custom_metrics)) $body['notification']['custom_metrics'] = $this->custom_metrics;
     if (isset($this->actions)) $body['notification']['actions'] = $this->actions;
