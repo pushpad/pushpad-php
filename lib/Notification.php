@@ -53,7 +53,7 @@ class Notification {
   private function deliver($req_body, $options = array()) {
     $project_id = isset($options['project_id']) ? $options['project_id'] : Pushpad::$project_id;
     if (!isset($project_id)) throw new \Exception('You must set Pushpad\Pushpad::$project_id');
-    $endpoint = "https://pushpad.xyz/projects/$project_id/notifications";
+    $endpoint = "https://pushpad.xyz/api/v1/projects/$project_id/notifications";
     $req = curl_init($endpoint);
     curl_setopt($req, CURLOPT_CUSTOMREQUEST, 'POST');
     curl_setopt($req, CURLOPT_POSTFIELDS, $req_body);
