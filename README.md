@@ -67,9 +67,9 @@ Pushpad\Pushpad::signature_for($current_user_id);
 $notification = new Pushpad\Notification(array(
   'body' => "Hello world!",
   'title' => "Website Name", # optional, defaults to your project name
-  'target_url' => "http://example.com", # optional, defaults to your project website
-  'icon_url' => "http://example.com/assets/icon.png", # optional, defaults to the project icon
-  'image_url' => "http://example.com/assets/image.png", # optional, an image to display in the notification content
+  'target_url' => "https://example.com", # optional, defaults to your project website
+  'icon_url' => "https://example.com/assets/icon.png", # optional, defaults to the project icon
+  'image_url' => "https://example.com/assets/image.png", # optional, an image to display in the notification content
   'ttl' => 604800, # optional, drop the notification after this number of seconds if a device is offline
   'require_interaction' => true, # optional, prevent Chrome on desktop from automatically closing the notification after a few seconds
   'urgent' => false, # optional, enable this option only for time-sensitive alerts (e.g. incoming phone call)
@@ -79,8 +79,8 @@ $notification = new Pushpad\Notification(array(
   'actions' => array(
     array(
       'title' => "My Button 1",
-      'target_url' => "http://example.com/button-link", # optional
-      'icon' => "http://example.com/assets/button-icon.png", # optional
+      'target_url' => "https://example.com/button-link", # optional
+      'icon' => "https://example.com/assets/button-icon.png", # optional
       'action' => "myActionName" # optional
     )
   ),
