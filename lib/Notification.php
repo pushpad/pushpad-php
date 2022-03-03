@@ -13,6 +13,7 @@ class Notification {
   public $title;
   public $target_url;
   public $icon_url;
+  public $badge_url;
   public $image_url;
   public $ttl;
   public $require_interaction;
@@ -29,6 +30,7 @@ class Notification {
     if (isset($options['title'])) $this->title = $options['title'];
     if (isset($options['target_url'])) $this->target_url = $options['target_url'];
     if (isset($options['icon_url'])) $this->icon_url = $options['icon_url'];
+    if (isset($options['badge_url'])) $this->badge_url = $options['badge_url'];
     if (isset($options['image_url'])) $this->image_url = $options['image_url'];
     if (isset($options['ttl'])) $this->ttl = $options['ttl'];
     if (isset($options['require_interaction'])) $this->require_interaction = $options['require_interaction'];
@@ -87,6 +89,7 @@ class Notification {
     if (isset($this->title)) $body['notification']['title'] = $this->title;
     if (isset($this->target_url)) $body['notification']['target_url'] = $this->target_url;
     if (isset($this->icon_url)) $body['notification']['icon_url'] = $this->icon_url;
+    if (isset($this->badge_url)) $body['notification']['badge_url'] = $this->badge_url;
     if (isset($this->image_url)) $body['notification']['image_url'] = $this->image_url;
     if (isset($this->ttl)) $body['notification']['ttl'] = $this->ttl;
     if (isset($this->require_interaction)) $body['notification']['require_interaction'] = $this->require_interaction;
