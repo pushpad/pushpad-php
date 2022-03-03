@@ -99,7 +99,7 @@ class Notification {
     if (isset($this->custom_metrics)) $body['notification']['custom_metrics'] = $this->custom_metrics;
     if (isset($this->actions)) $body['notification']['actions'] = $this->actions;
     if (isset($this->starred)) $body['notification']['starred'] = $this->starred;
-    if (isset($this->send_at)) $body['notification']['send_at'] = gmstrftime('%Y-%m-%dT%H:%M', $this->send_at);
+    if (isset($this->send_at)) $body['notification']['send_at'] = date('c', $this->send_at);
 
     if (isset($uids)) $body['uids'] = $uids;
     if (isset($tags)) $body['tags'] = $tags;
