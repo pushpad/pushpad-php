@@ -4,7 +4,7 @@
 [![Total Downloads](https://poser.pugx.org/pushpad/pushpad-php/downloads)](//packagist.org/packages/pushpad/pushpad-php)
 [![License](https://poser.pugx.org/pushpad/pushpad-php/license)](//packagist.org/packages/pushpad/pushpad-php)
  
-[Pushpad](https://pushpad.xyz) is a service for sending push notifications from your web app. It supports the **Push API** (Chrome, Firefox, Opera, Edge) and **APNs** (Safari).
+[Pushpad](https://pushpad.xyz) is a service for sending push notifications from your web app. It supports the **Push API** (Chrome, Firefox, Opera, Edge) and **APNs** (Safari desktop). iOS support is coming in 2023.
 
 Features:
 
