@@ -65,17 +65,40 @@ Pushpad\Pushpad::signature_for($current_user_id);
 
 ```php
 $notification = new Pushpad\Notification(array(
+  # required, the main content of the notification
   'body' => "Hello world!",
-  'title' => "Website Name", # optional, defaults to your project name
-  'target_url' => "https://example.com", # optional, defaults to your project website
-  'icon_url' => "https://example.com/assets/icon.png", # optional, defaults to the project icon
-  'badge_url' => "https://example.com/assets/badge.png", # optional, defaults to the project badge
-  'image_url' => "https://example.com/assets/image.png", # optional, an image to display in the notification content
-  'ttl' => 604800, # optional, drop the notification after this number of seconds if a device is offline
-  'require_interaction' => true, # optional, prevent Chrome on desktop from automatically closing the notification after a few seconds
-  'silent' => false, # optional, enable this option if you want a mute notification without any sound
-  'urgent' => false, # optional, enable this option only for time-sensitive alerts (e.g. incoming phone call)
-  'custom_data' => "123", # optional, a string that is passed as an argument to action button callbacks
+
+  # optional, the title of the notification (defaults to your project name)
+  'title' => "Website Name",
+
+  # optional, open this link on notification click (defaults to your project website)
+  'target_url' => "https://example.com",
+
+  # optional, the icon of the notification (defaults to the project icon)
+  'icon_url' => "https://example.com/assets/icon.png",
+
+  # optional, the small icon displayed in the status bar (defaults to the project badge)
+  'badge_url' => "https://example.com/assets/badge.png",
+
+  # optional, an image to display in the notification content
+  # see https://pushpad.xyz/docs/sending_images
+  'image_url' => "https://example.com/assets/image.png",
+
+  # optional, drop the notification after this number of seconds if a device is offline
+  'ttl' => 604800,
+
+  # optional, prevent Chrome on desktop from automatically closing the notification after a few seconds
+  'require_interaction' => true,
+
+  # optional, enable this option if you want a mute notification without any sound
+  'silent' => false,
+
+  # optional, enable this option only for time-sensitive alerts (e.g. incoming phone call)
+  'urgent' => false,
+
+  # optional, a string that is passed as an argument to action button callbacks
+  'custom_data' => "123",
+
   # optional, add some action buttons to the notification
   # see https://pushpad.xyz/docs/action_buttons
   'actions' => array(
@@ -86,10 +109,14 @@ $notification = new Pushpad\Notification(array(
       'action' => "myActionName" # optional
     )
   ),
-  'starred' => true, # optional, bookmark the notification in the Pushpad dashboard (e.g. to highlight manual notifications)
+
+  # optional, bookmark the notification in the Pushpad dashboard (e.g. to highlight manual notifications)
+  'starred' => true,
+
   # optional, use this option only if you need to create scheduled notifications (max 5 days)
   # see https://pushpad.xyz/docs/schedule_notifications
   'send_at' => strtotime('2016-07-25 10:09'), # use a function like strtotime or time that returns a Unix timestamp
+
   # optional, add the notification to custom categories for stats aggregation
   # see https://pushpad.xyz/docs/monitoring
   'custom_metrics' => array('examples', 'another_metric') # up to 3 metrics per notification
