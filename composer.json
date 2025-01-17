@@ -3,6 +3,8 @@
   "description": "Pushpad PHP Library",
   "keywords": [
     "pushpad",
+    "web push",
+    "notifications",
     "push notifications",
     "api"
   ],
