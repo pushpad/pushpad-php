@@ -1,5 +1,6 @@
 # Pushpad - Web Push Notifications
 
+![Build Status](https://github.com/pushpad/pushpad-php/workflows/CI/badge.svg)
 [![Latest Stable Version](https://poser.pugx.org/pushpad/pushpad-php/v)](//packagist.org/packages/pushpad/pushpad-php)
 [![Total Downloads](https://poser.pugx.org/pushpad/pushpad-php/downloads)](//packagist.org/packages/pushpad/pushpad-php)
 [![License](https://poser.pugx.org/pushpad/pushpad-php/license)](//packagist.org/packages/pushpad/pushpad-php)
