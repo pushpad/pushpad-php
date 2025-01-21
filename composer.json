@@ -23,5 +23,10 @@
   },
   "autoload": {
     "psr-4": { "Pushpad\\" : "lib/" }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11.5",
+    "php-mock/php-mock": "^2.5",
+    "php-mock/php-mock-phpunit": "^2.10"
   }
 }
