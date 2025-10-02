@@ -1,97 +1,253 @@
 <?php
 
+declare(strict_types=1);
+
 use PHPUnit\Framework\TestCase;
-use phpmock\phpunit\PHPMock;
-use Pushpad\Pushpad;
+use Pushpad\HttpClient;
 use Pushpad\Notification;
-use Pushpad\NotificationDeliveryError;
+use Pushpad\Pushpad;
 
-class NotificationTest extends TestCase {
-  use PHPMock;
-  
-  private $notification;
+class NotificationTest extends TestCase
+{
+    protected function setUp(): void
+    {
+        Pushpad::$auth_token = 'token';
+        Pushpad::$project_id = 123;
+    }
 
-  protected function setUp(): void {
-    Pushpad::$auth_token = 'test_token';
-    Pushpad::$project_id = 12345;
+    protected function tearDown(): void
+    {
+        Pushpad::setHttpClient(null);
+        Pushpad::$auth_token = null;
+        Pushpad::$project_id = null;
+    }
 
-    $this->notification = new Notification([
-      'body' => 'Test body',
-      'title' => 'Test title',
-      'target_url' => 'https://example.com'
-    ]);
-  }
+    public function testFindAllReturnsNotifications(): void
+    {
+        $httpClient = $this->createMock(HttpClient::class);
+        $responseBody = [
+            [
+                'id' => 197123,
+                'project_id' => 123,
+                'title' => 'Black Friday Deals',
+                'body' => 'Enjoy 50% off on all items!',
+                'target_url' => 'https://example.com/deals',
+                'created_at' => '2025-09-14T10:30:00.123Z',
+                'scheduled' => false,
+            ],
+            [
+                'id' => 197124,
+                'project_id' => 123,
+                'title' => 'Cyber Monday',
+                'body' => 'Exclusive online offers.',
+                'target_url' => 'https://example.com/cyber',
+                'created_at' => '2025-09-15T10:30:00.123Z',
+                'scheduled' => false,
+            ],
+        ];
 
-  public function testNotificationInitialization() {
-    $this->assertEquals('Test body', $this->notification->body);
-    $this->assertEquals('Test title', $this->notification->title);
-    $this->assertEquals('https://example.com', $this->notification->target_url);
-  }
+        $httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with('GET', '/projects/123/notifications', ['query' => ['page' => 1]])
+            ->willReturn([
+                'status' => 200,
+                'body' => $responseBody,
+                'headers' => [],
+                'raw_body' => null,
+            ]);
 
-  public function testBroadcastNotification() {
-    $mockResponse = json_encode(['id' => 123, 'scheduled' => 5000]);
-    $this->mockCurl($mockResponse, 201);
+        Pushpad::setHttpClient($httpClient);
 
-    $response = $this->notification->broadcast();
-    $this->assertArrayHasKey('id', $response);
-    $this->assertEquals(123, $response['id']);
-    $this->assertArrayHasKey('scheduled', $response);
-    $this->assertEquals(5000, $response['scheduled']);
-  }
-  
-  public function testBroadcastNotificationWithTags() {
-    $mockResponse = json_encode(['id' => 789, 'scheduled' => 1000]);
-    $this->mockCurl($mockResponse, 201);
+        $notifications = Notification::findAll(null, ['page' => 1]);
 
-    $response = $this->notification->broadcast(['tags' => ['segment1', 'segment2']]);
-    $this->assertArrayHasKey('id', $response);
-    $this->assertEquals(789, $response['id']);
-    $this->assertArrayHasKey('scheduled', $response);
-    $this->assertEquals(1000, $response['scheduled']);
-  }
+        $this->assertCount(2, $notifications);
+        $this->assertSame('Black Friday Deals', $notifications[0]->title);
+        $this->assertSame('Cyber Monday', $notifications[1]->title);
 
-  public function testDeliverToSpecificUsers() {
-    $mockResponse = json_encode(['id' => 456, 'scheduled' => 1, 'uids' => ['user1']]);
-    $this->mockCurl($mockResponse, 201);
+        $this->expectException(InvalidArgumentException::class);
+        $unused = $notifications[0]->undefined_property;
+    }
 
-    $response = $this->notification->deliver_to(['user1', 'user2']);
-    $this->assertArrayHasKey('id', $response);
-    $this->assertEquals(456, $response['id']);
-    $this->assertArrayHasKey('scheduled', $response);
-    $this->assertEquals(1, $response['scheduled']);
-    $this->assertArrayHasKey('uids', $response);
-    $this->assertEquals(['user1'], $response['uids']);
-  }
+    public function testFindReturnsNotification(): void
+    {
+        $httpClient = $this->createMock(HttpClient::class);
+        $httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with('GET', '/notifications/197123', [])
+            ->willReturn([
+                'status' => 200,
+                'body' => [
+                    'id' => 197123,
+                    'project_id' => 123,
+                    'title' => 'Order Shipped',
+                    'body' => 'Your order has been shipped.',
+                    'created_at' => '2025-09-14T10:30:00.123Z',
+                ],
+                'headers' => [],
+                'raw_body' => null,
+            ]);
 
-  public function testMissingAuthTokenThrowsException() {
-    Pushpad::$auth_token = null;
+        Pushpad::setHttpClient($httpClient);
 
-    $this->expectException(Exception::class);
-    $this->notification->broadcast();
-  }
+        $notification = Notification::find(197123);
 
-  public function testMissingProjectIdThrowsException() {
-    Pushpad::$project_id = null;
+        $this->assertInstanceOf(Notification::class, $notification);
+        $this->assertSame('Order Shipped', $notification->title);
+    }
 
-    $this->expectException(Exception::class);
-    $this->notification->broadcast();
-  }
+    public function testCreateNotificationSendsPayload(): void
+    {
+        $payload = [
+            'notification' => [
+                'title' => 'New Feature',
+                'body' => 'Try our new feature today!',
+                'target_url' => 'https://example.com/new-feature',
+                'icon_url' => 'https://example.com/icon.png',
+            ],
+            'uids' => ['user1', 'user2'],
+            'tags' => ['beta-testers'],
+        ];
 
-  public function testInvalidResponseCodeThrowsError() {
-    $this->mockCurl('Error message', 400);
+        $httpClient = $this->createMock(HttpClient::class);
+        $httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with(
+                'POST',
+                '/projects/123/notifications',
+                $this->callback(function (array $options) use ($payload): bool {
+                    $this->assertSame($payload, $options['json']);
+                    return true;
+                })
+            )
+            ->willReturn([
+                'status' => 201,
+                'body' => [
+                    'id' => 200001,
+                    'project_id' => 123,
+                    'title' => 'New Feature',
+                    'body' => 'Try our new feature today!',
+                    'target_url' => 'https://example.com/new-feature',
+                    'created_at' => '2025-09-16T09:00:00.000Z',
+                ],
+                'headers' => [],
+                'raw_body' => null,
+            ]);
 
-    $this->expectException(NotificationDeliveryError::class);
-    $this->notification->broadcast();
-  }
+        Pushpad::setHttpClient($httpClient);
 
-  private function mockCurl($responseBody, $statusCode) {
-    $mockCurl = $this->getFunctionMock('Pushpad', 'curl_exec');
-    $mockCurl->expects($this->any())->willReturn($responseBody);
+        $notification = Notification::create($payload);
 
-    $mockInfo = $this->getFunctionMock('Pushpad', 'curl_getinfo');
-    $mockInfo->expects($this->any())->willReturn($statusCode);
+        $this->assertSame(200001, $notification->id);
+        $this->assertSame('New Feature', $notification->title);
+    }
 
-    $mockClose = $this->getFunctionMock('Pushpad', 'curl_close');
-    $mockClose->expects($this->any())->willReturn(null);
-  }
+    public function testSendNotificationUsesCreate(): void
+    {
+        $payload = [
+            'notification' => [
+                'title' => 'Weekly Update',
+                'body' => 'A recap of the week.',
+                'target_url' => 'https://example.com/update',
+            ],
+        ];
+
+        $httpClient = $this->createMock(HttpClient::class);
+        $httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with(
+                'POST',
+                '/projects/123/notifications',
+                $this->callback(function (array $options) use ($payload): bool {
+                    $this->assertSame($payload, $options['json']);
+                    return true;
+                })
+            )
+            ->willReturn([
+                'status' => 201,
+                'body' => [
+                    'id' => 210000,
+                    'project_id' => 123,
+                    'title' => 'Weekly Update',
+                    'body' => 'A recap of the week.',
+                    'target_url' => 'https://example.com/update',
+                    'created_at' => '2025-09-17T08:00:00.000Z',
+                ],
+                'headers' => [],
+                'raw_body' => null,
+            ]);
+
+        Pushpad::setHttpClient($httpClient);
+
+        $notification = Notification::send($payload);
+
+        $this->assertSame(210000, $notification->id);
+        $this->assertSame('Weekly Update', $notification->title);
+    }
+
+    public function testCancelNotification(): void
+    {
+        $httpClient = $this->createMock(HttpClient::class);
+        $httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with('DELETE', '/notifications/197123/cancel', [])
+            ->willReturn([
+                'status' => 204,
+                'body' => null,
+                'headers' => [],
+                'raw_body' => null,
+            ]);
+
+        Pushpad::setHttpClient($httpClient);
+
+        $notification = new Notification([
+            'id' => 197123,
+            'title' => 'Sale Reminder',
+            'cancelled' => false,
+        ]);
+
+        $notification->cancel();
+
+        $this->assertTrue($notification->cancelled);
+    }
+
+    public function testRefreshNotificationUpdatesAttributes(): void
+    {
+        $httpClient = $this->createMock(HttpClient::class);
+        $httpClient
+            ->expects($this->once())
+            ->method('request')
+            ->with('GET', '/notifications/197123', [])
+            ->willReturn([
+                'status' => 200,
+                'body' => [
+                    'id' => 197123,
+                    'project_id' => 123,
+                    'title' => 'Updated Title',
+                    'body' => 'Updated body copy.',
+                    'target_url' => 'https://example.com/new',
+                    'created_at' => '2025-09-14T10:30:00.123Z',
+                ],
+                'headers' => [],
+                'raw_body' => null,
+            ]);
+
+        Pushpad::setHttpClient($httpClient);
+
+        $notification = new Notification([
+            'id' => 197123,
+            'project_id' => 123,
+            'title' => 'Old Title',
+            'body' => 'Old body.',
+        ]);
+
+        $notification->refresh();
+
+        $this->assertSame('Updated Title', $notification->title);
+        $this->assertSame('Updated body copy.', $notification->body);
+    }
 }
