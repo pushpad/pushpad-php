@@ -78,7 +78,7 @@ class Notification extends Resource
     {
         $resolvedProjectId = Pushpad::resolveProjectId($projectId);
         $response = self::httpPost("/projects/{$resolvedProjectId}/notifications", [
-            'json' => $payload,
+            'json' => self::filterForCreatePayload($payload),
         ]);
         self::ensureStatus($response, 201);
         $data = $response['body'];
