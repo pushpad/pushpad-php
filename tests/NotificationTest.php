@@ -100,12 +100,10 @@ class NotificationTest extends TestCase
     public function testCreateNotificationSendsPayload(): void
     {
         $payload = [
-            'notification' => [
-                'title' => 'New Feature',
-                'body' => 'Try our new feature today!',
-                'target_url' => 'https://example.com/new-feature',
-                'icon_url' => 'https://example.com/icon.png',
-            ],
+            'title' => 'New Feature',
+            'body' => 'Try our new feature today!',
+            'target_url' => 'https://example.com/new-feature',
+            'icon_url' => 'https://example.com/icon.png',
             'uids' => ['user1', 'user2'],
             'tags' => ['beta-testers'],
         ];
@@ -143,11 +141,9 @@ class NotificationTest extends TestCase
     public function testSendNotificationUsesCreate(): void
     {
         $payload = [
-            'notification' => [
-                'title' => 'Weekly Update',
-                'body' => 'A recap of the week.',
-                'target_url' => 'https://example.com/update',
-            ],
+            'title' => 'Weekly Update',
+            'body' => 'A recap of the week.',
+            'target_url' => 'https://example.com/update',
         ];
 
         $httpClient = $this->createMock(HttpClient::class);
