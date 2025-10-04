@@ -71,7 +71,10 @@ class Notification extends Resource
         return new self($data);
     }
 
-    public static function create(array $payload, ?int $projectId = null): self
+    /**
+     * @return array<string, mixed>
+     */
+    public static function create(array $payload, ?int $projectId = null): array
     {
         $resolvedProjectId = Pushpad::resolveProjectId($projectId);
         $response = self::httpPost("/projects/{$resolvedProjectId}/notifications", [
@@ -80,10 +83,13 @@ class Notification extends Resource
         self::ensureStatus($response, 201);
         $data = $response['body'];
 
-        return new self($data);
+        return $data;
     }
 
-    public static function send(array $payload, ?int $projectId = null): self
+    /**
+     * @return array<string, mixed>
+     */
+    public static function send(array $payload, ?int $projectId = null): array
     {
         return static::create($payload, $projectId);
     }

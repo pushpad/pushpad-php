@@ -126,11 +126,7 @@ class NotificationTest extends TestCase
                 'status' => 201,
                 'body' => [
                     'id' => 200001,
-                    'project_id' => 123,
-                    'title' => 'New Feature',
-                    'body' => 'Try our new feature today!',
-                    'target_url' => 'https://example.com/new-feature',
-                    'created_at' => '2025-09-16T09:00:00.000Z',
+                    'scheduled' => 5,
                 ],
                 'headers' => [],
                 'raw_body' => null,
@@ -138,10 +134,10 @@ class NotificationTest extends TestCase
 
         Pushpad::setHttpClient($httpClient);
 
-        $notification = Notification::create($payload);
+        $response = Notification::create($payload);
 
-        $this->assertSame(200001, $notification->id);
-        $this->assertSame('New Feature', $notification->title);
+        $this->assertSame(200001, $response['id']);
+        $this->assertSame(5, $response['scheduled']);
     }
 
     public function testSendNotificationUsesCreate(): void
@@ -170,11 +166,7 @@ class NotificationTest extends TestCase
                 'status' => 201,
                 'body' => [
                     'id' => 210000,
-                    'project_id' => 123,
-                    'title' => 'Weekly Update',
-                    'body' => 'A recap of the week.',
-                    'target_url' => 'https://example.com/update',
-                    'created_at' => '2025-09-17T08:00:00.000Z',
+                    'scheduled' => 1000,
                 ],
                 'headers' => [],
                 'raw_body' => null,
@@ -182,10 +174,10 @@ class NotificationTest extends TestCase
 
         Pushpad::setHttpClient($httpClient);
 
-        $notification = Notification::send($payload);
+        $response = Notification::send($payload);
 
-        $this->assertSame(210000, $notification->id);
-        $this->assertSame('Weekly Update', $notification->title);
+        $this->assertSame(210000, $response['id']);
+        $this->assertSame(1000, $response['scheduled']);
     }
 
     public function testCancelNotification(): void
