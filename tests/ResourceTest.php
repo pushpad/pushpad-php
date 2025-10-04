@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Pushpad\HttpClient;
 use Pushpad\Pushpad;
@@ -178,9 +179,7 @@ class ResourceTest extends TestCase
         ], $resource->toArray());
     }
 
-    /**
-     * @dataProvider httpMethodProvider
-     */
+    #[DataProvider('httpMethodProvider')]
     public function testHttpHelpersProxyRequestsToHttpClient(string $method, string $wrapper): void
     {
         Pushpad::$auth_token = 'token';
