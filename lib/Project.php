@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Pushpad;
 
+/**
+ * Models a Pushpad project which groups notifications and subscriptions.
+ */
 class Project extends Resource
 {
     protected const ATTRIBUTES = [
@@ -27,10 +30,12 @@ class Project extends Resource
     protected const IMMUTABLE_ATTRIBUTES = [
         'sender_id',
     ];
-
-        
     /**
-     * @return array<int, self>
+     * Lists all projects available to the configured account.
+     *
+     * @return list<self>
+     *
+     * @throws \Pushpad\Exception\ApiException When the API response has an unexpected status.
      */
     public static function findAll(): array
     {
@@ -41,6 +46,11 @@ class Project extends Resource
         return array_map(fn (array $item) => new self($item), $items);
     }
 
+    /**
+     * Fetches a single project by its identifier.
+     *
+     * @throws \Pushpad\Exception\ApiException When the API response has an unexpected status.
+     */
     public static function find(int $projectId): self
     {
         $response = self::httpGet("/projects/{$projectId}");
@@ -50,6 +60,13 @@ class Project extends Resource
         return new self($data);
     }
 
+    /**
+     * Creates a new project.
+     *
+     * @param array<string, mixed> $payload
+     *
+     * @throws \Pushpad\Exception\ApiException When the API response has an unexpected status.
+     */
     public static function create(array $payload): self
     {
         $response = self::httpPost('/projects', [
@@ -61,6 +78,11 @@ class Project extends Resource
         return new self($data);
     }
 
+    /**
+     * Refreshes the local project attributes with the API state.
+     *
+     * @throws \Pushpad\Exception\ApiException When the API response has an unexpected status.
+     */
     public function refresh(): self
     {
         $response = self::httpGet("/projects/{$this->requireId()}");
@@ -70,6 +92,13 @@ class Project extends Resource
         return $this;
     }
 
+    /**
+     * Updates the project with the provided attributes.
+     *
+     * @param array<string, mixed> $payload
+     *
+     * @throws \Pushpad\Exception\ApiException When the API response has an unexpected status.
+     */
     public function update(array $payload): self
     {
         $response = self::httpPatch("/projects/{$this->requireId()}", [
@@ -81,6 +110,11 @@ class Project extends Resource
         return $this;
     }
 
+    /**
+     * Deletes the project.
+     *
+     * @throws \Pushpad\Exception\ApiException When the API response has an unexpected status.
+     */
     public function delete(): void
     {
         $response = self::httpDelete("/projects/{$this->requireId()}");

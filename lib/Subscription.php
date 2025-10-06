@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Pushpad;
 
+/**
+ * Represents a push subscription associated with a Pushpad project.
+ */
 class Subscription extends Resource
 {
     protected const ATTRIBUTES = [
@@ -30,16 +33,19 @@ class Subscription extends Resource
         'p256dh',
         'auth',
     ];
-
-        
+    
     /**
+     * Retrieves project subscriptions, with pagination and optional filters.
+     *
      * @param array{
      *     page?: int,
      *     per_page?: int,
      *     uids?: list<string>,
      *     tags?: list<string>
      * } $query
-     * @return array<int, self>
+     * @return list<self>
+     *
+     * @throws \Pushpad\Exception\ApiException When the API response has an unexpected status.
      */
     public static function findAll(array $query = [], ?int $projectId = null): array
     {
@@ -58,12 +64,15 @@ class Subscription extends Resource
     }
 
     /**
+     * Count the subscriptions, with optional filters.
+     *
      * @param array{
-     *     page?: int,
-     *     per_page?: int,
      *     uids?: list<string>,
      *     tags?: list<string>
      * } $query
+     *
+     * @throws \Pushpad\Exception\ApiException When the API response has an unexpected status.
+     * @throws \UnexpectedValueException When the response does not include the expected header.
      */
     public static function count(array $query = [], ?int $projectId = null): int
     {
@@ -83,6 +92,11 @@ class Subscription extends Resource
         return (int) $headers[$name][0];
     }
 
+    /**
+     * Retrieves a subscription by its identifier.
+     *
+     * @throws \Pushpad\Exception\ApiException When the API response has an unexpected status.
+     */
     public static function find(int $subscriptionId, ?int $projectId = null): self
     {
         $resolvedProjectId = Pushpad::resolveProjectId($projectId);
@@ -93,6 +107,13 @@ class Subscription extends Resource
         return new self(self::injectProjectId($data, $resolvedProjectId));
     }
 
+    /**
+     * Creates a subscription.
+     *
+     * @param array<string, mixed> $payload
+     *
+     * @throws \Pushpad\Exception\ApiException When the API response has an unexpected status.
+     */
     public static function create(array $payload, ?int $projectId = null): self
     {
         $resolvedProjectId = Pushpad::resolveProjectId($projectId);
@@ -106,6 +127,11 @@ class Subscription extends Resource
         return new self(self::injectProjectId($data, $resolvedProjectId));
     }
 
+    /**
+     * Refreshes the resource with the current data returned by the API.
+     *
+     * @throws \Pushpad\Exception\ApiException When the API response has an unexpected status.
+     */
     public function refresh(?int $projectId = null): self
     {
         $project = $this->determineProjectId($projectId);
@@ -116,6 +142,13 @@ class Subscription extends Resource
         return $this;
     }
 
+    /**
+     * Updates a subscription.
+     *
+     * @param array<string, mixed> $payload
+     *
+     * @throws \Pushpad\Exception\ApiException When the API response has an unexpected status.
+     */
     public function update(array $payload, ?int $projectId = null): self
     {
         $project = $this->determineProjectId($projectId);
@@ -129,6 +162,11 @@ class Subscription extends Resource
         return $this;
     }
 
+    /**
+     * Deletes the subscription.
+     *
+     * @throws \Pushpad\Exception\ApiException When the API response has an unexpected status.
+     */
     public function delete(?int $projectId = null): void
     {
         $project = $this->determineProjectId($projectId);
@@ -136,6 +174,11 @@ class Subscription extends Resource
         self::ensureStatus($response, 204);
     }
 
+    /**
+     * Determines which project id should be used for an instance method call.
+     *
+     * @throws \Pushpad\Exception\ConfigurationException When no project id can be resolved.
+     */
     private function determineProjectId(?int $projectId = null): int
     {
         if ($projectId !== null) {
@@ -151,6 +194,7 @@ class Subscription extends Resource
 
     /**
      * @param array<string, mixed> $data
+     * @param int $projectId
      * @return array<string, mixed>
      */
     private static function injectProjectId(array $data, int $projectId): array

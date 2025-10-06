@@ -6,6 +6,9 @@ namespace Pushpad;
 
 use Pushpad\Exception\NetworkException;
 
+/**
+ * Thin wrapper around cURL tailored to the Pushpad API conventions.
+ */
 class HttpClient
 {
     private string $baseUrl;
@@ -13,6 +16,14 @@ class HttpClient
     private int $timeout;
     private string $userAgent;
 
+    /**
+     * @param string $authToken API token granted by Pushpad.
+     * @param string $baseUrl Base endpoint for the REST API.
+     * @param int $timeout Default timeout in seconds for requests.
+     * @param string|null $userAgent Forces a custom User-Agent header when provided.
+     *
+     * @throws \InvalidArgumentException When the authentication token is empty.
+     */
     public function __construct(string $authToken, string $baseUrl = 'https://pushpad.xyz/api/v1', int $timeout = 30, ?string $userAgent = null)
     {
         if ($authToken === '') {
@@ -26,8 +37,13 @@ class HttpClient
     }
 
     /**
+     * Executes an HTTP request against the Pushpad API.
+     *
      * @param array{query?:array<string,mixed>, json?:mixed, body?:string, headers?:array<int,string>, timeout?:int} $options
      * @return array{status:int, body:mixed, headers:array<string, array<int, string>>, raw_body:?string}
+     *
+     * @throws NetworkException When the underlying cURL call fails.
+     * @throws \RuntimeException When encoding the JSON payload fails.
      */
     public function request(string $method, string $path, array $options = []): array
     {
@@ -98,6 +114,9 @@ class HttpClient
         ];
     }
 
+    /**
+     * @return list<string>
+     */
     private function defaultHeaders(): array
     {
         return [
@@ -106,6 +125,11 @@ class HttpClient
         ];
     }
 
+    /**
+     * Creates an absolute URL including any query string parameters.
+     *
+     * @param array<string, mixed> $query
+     */
     private function buildUrl(string $path, array $query): string
     {
         $url = $this->baseUrl . '/' . ltrim($path, '/');
@@ -121,6 +145,7 @@ class HttpClient
 
     /**
      * @param array<string, mixed> $query
+     * @return string
      */
     private function buildQueryString(array $query): string
     {
@@ -146,6 +171,11 @@ class HttpClient
         return implode('&', $parts);
     }
 
+    /**
+     * Decodes the JSON body when possible, returning the raw string otherwise.
+     *
+     * @return mixed
+     */
     private function decode(string $rawBody)
     {
         $trimmed = trim($rawBody);
