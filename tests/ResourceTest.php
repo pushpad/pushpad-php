@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Pushpad\Exception\ApiException;
 use Pushpad\HttpClient;
 use Pushpad\Pushpad;
 use Pushpad\Resource;
@@ -165,8 +166,29 @@ class ResourceTest extends TestCase
 
     public function testEnsureStatusThrowsForUnexpectedCode(): void
     {
-        $this->expectException(\UnexpectedValueException::class);
+        $this->expectException(ApiException::class);
         DummyResource::exposeEnsureStatus(['status' => 500], 204);
+    }
+
+    public function testEnsureStatusExceptionCarriesResponseDetails(): void
+    {
+        $response = [
+            'status' => 422,
+            'body' => ['message' => 'Invalid input'],
+            'headers' => ['content-type' => ['application/json']],
+            'raw_body' => '{"message":"Invalid input"}',
+        ];
+
+        try {
+            DummyResource::exposeEnsureStatus($response, 204);
+            $this->fail('ApiException was not thrown.');
+        } catch (ApiException $exception) {
+            $this->assertSame(422, $exception->getStatusCode());
+            $this->assertSame($response['body'], $exception->getResponseBody());
+            $this->assertSame($response['headers'], $exception->getResponseHeaders());
+            $this->assertSame($response['raw_body'], $exception->getRawBody());
+            $this->assertStringContainsString('Invalid input', $exception->getMessage());
+        }
     }
 
     public function testConstructorKeepsAttributesWhenNoListDefined(): void

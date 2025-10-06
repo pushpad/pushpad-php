@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Pushpad;
 
+use Pushpad\Exception\NetworkException;
+
 class HttpClient
 {
     private string $baseUrl;
@@ -52,7 +54,7 @@ class HttpClient
         $responseHeaders = [];
         $handle = curl_init($url);
         if ($handle === false) {
-            throw new \RuntimeException('Unable to initialize cURL');
+            throw new NetworkException('Unable to initialize cURL.');
         }
 
         curl_setopt($handle, CURLOPT_CUSTOMREQUEST, strtoupper($method));
@@ -82,7 +84,7 @@ class HttpClient
         if ($rawBody === false) {
             $errorMessage = curl_error($handle);
             curl_close($handle);
-            throw new \RuntimeException('cURL request error: ' . $errorMessage);
+            throw new NetworkException('cURL request error: ' . $errorMessage);
         }
 
         $status = (int) curl_getinfo($handle, CURLINFO_HTTP_CODE);

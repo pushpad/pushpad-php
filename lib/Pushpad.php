@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Pushpad;
 
+use Pushpad\Exception\ConfigurationException;
+
 class Pushpad
 {
     public static ?string $auth_token = null;
@@ -15,7 +17,7 @@ class Pushpad
     public static function signature_for(string $data): string
     {
         if (!isset(self::$auth_token)) {
-            throw new \Exception('You must set Pushpad\\Pushpad::$auth_token');
+            throw new ConfigurationException('Pushpad::$auth_token must be set before calling signature_for().');
         }
 
         return hash_hmac('sha256', $data, self::$auth_token);
@@ -29,7 +31,7 @@ class Pushpad
     public static function http(): HttpClient
     {
         if (!isset(self::$auth_token) || self::$auth_token === '') {
-            throw new \Exception('You must set Pushpad\\Pushpad::$auth_token');
+            throw new ConfigurationException('Pushpad::$auth_token must be a non-empty string.');
         }
 
         if (self::$httpClient instanceof HttpClient) {
@@ -55,6 +57,6 @@ class Pushpad
             return self::$project_id;
         }
 
-        throw new \InvalidArgumentException('A project ID is required but was not provided.');
+        throw new ConfigurationException('Pushpad::$project_id must be configured or provided explicitly.');
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Pushpad;
 
+use Pushpad\Exception\ApiException;
+
 /**
  * Lightweight base class for Pushpad API resources.
  */
@@ -105,13 +107,7 @@ abstract class Resource implements \JsonSerializable
     {
         $status = $response['status'] ?? 0;
         if ($status !== $expectedStatusCode) {
-            throw new \UnexpectedValueException(
-                sprintf(
-                    'Unexpected status code %d. Expected %d.',
-                    $status,
-                    $expectedStatusCode
-                )
-            );
+            throw ApiException::fromResponse($response, $expectedStatusCode);
         }
     }
 
