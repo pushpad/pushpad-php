@@ -69,14 +69,14 @@ class ApiException extends PushpadException
     /**
      * @param array{status?:int, body?:mixed, headers?:array<string, array<int, string>>, raw_body?:?string} $response
      */
-    public static function fromResponse(array $response, int $expectedStatusCode): self
+    public static function fromResponse(array $response): self
     {
         $status = isset($response['status']) ? (int) $response['status'] : 0;
         $body = $response['body'] ?? null;
         $headers = $response['headers'] ?? null;
         $rawBody = $response['raw_body'] ?? null;
 
-        $message = self::buildMessage($status, $expectedStatusCode, $body);
+        $message = self::buildMessage($status, $body);
 
         return new self($message, $status, $body, $headers, $rawBody);
     }
@@ -84,9 +84,9 @@ class ApiException extends PushpadException
     /**
      * @param mixed $body
      */
-    private static function buildMessage(int $status, int $expectedStatusCode, $body): string
+    private static function buildMessage(int $status, $body): string
     {
-        $baseMessage = sprintf('Unexpected status code %d (expected %d).', $status, $expectedStatusCode);
+        $baseMessage = sprintf('Pushpad API responded with status %d.', $status);
 
         $details = '';
 
@@ -118,4 +118,3 @@ class ApiException extends PushpadException
         return $baseMessage . ' ' . $details;
     }
 }
-

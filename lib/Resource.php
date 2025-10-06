@@ -107,7 +107,7 @@ abstract class Resource implements \JsonSerializable
     {
         $status = $response['status'] ?? 0;
         if ($status !== $expectedStatusCode) {
-            throw ApiException::fromResponse($response, $expectedStatusCode);
+            throw ApiException::fromResponse($response);
         }
     }
 
