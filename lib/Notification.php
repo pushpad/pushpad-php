@@ -47,6 +47,7 @@ class Notification extends Resource
 
         
     /**
+     * @param array{page?: int} $query
      * @return array<int, self>
      */
     public static function findAll(array $query = [], ?int $projectId = null): array
