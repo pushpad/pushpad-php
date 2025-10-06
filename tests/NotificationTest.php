@@ -11,15 +11,15 @@ class NotificationTest extends TestCase
 {
     protected function setUp(): void
     {
-        Pushpad::$auth_token = 'token';
-        Pushpad::$project_id = 123;
+        Pushpad::$authToken = 'token';
+        Pushpad::$projectId = 123;
     }
 
     protected function tearDown(): void
     {
         Pushpad::setHttpClient(null);
-        Pushpad::$auth_token = null;
-        Pushpad::$project_id = null;
+        Pushpad::$authToken = null;
+        Pushpad::$projectId = null;
     }
 
     public function testFindAllReturnsNotifications(): void

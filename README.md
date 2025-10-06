@@ -45,12 +45,12 @@ First you need to sign up to Pushpad and create a project there.
 Then set your authentication credentials:
 
 ```php
-Pushpad\Pushpad::$auth_token = '5374d7dfeffa2eb49965624ba7596a09';
-Pushpad\Pushpad::$project_id = 123; # set it here or pass it as a param to methods later
+Pushpad\Pushpad::$authToken = '5374d7dfeffa2eb49965624ba7596a09';
+Pushpad\Pushpad::$projectId = 123; # set it here or pass it as a param to methods later
 ```
 
-- `auth_token` can be found in the user account settings. 
-- `project_id` can be found in the project settings. If your application uses multiple projects, you can pass the `project_id` as a param to methods (e.g. `$notification->deliver_to(user_id, array('project_id' => 123))`).
+- `authToken` can be found in the user account settings. 
+- `projectId` can be found in the project settings. If your application uses multiple projects, you can pass the `project_id` as a param to methods (e.g. `$notification->deliver_to(user_id, array('project_id' => 123))`).
 
 ## Collecting user subscriptions to push notifications
 
@@ -59,7 +59,7 @@ You can subscribe the users to your notifications using the Javascript SDK, as d
 If you need to generate the HMAC signature for the `uid` you can use this helper:
 
 ```php
-Pushpad\Pushpad::signature_for($current_user_id);
+Pushpad\Pushpad::signatureFor($current_user_id);
 ```
 
 ## Sending push notifications

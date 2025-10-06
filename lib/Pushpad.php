@@ -14,17 +14,17 @@ class Pushpad
     /**
      * API token used to authenticate every request performed by the SDK.
      */
-    public static ?string $auth_token = null;
+    public static ?string $authToken = null;
 
     /**
      * Default project identifier used when a project id is not passed explicitly.
      */
-    public static ?int $project_id = null;
+    public static ?int $projectId = null;
 
     /**
      * Base URL for the Pushpad REST API.
      */
-    public static string $base_url = 'https://pushpad.xyz/api/v1';
+    public static string $baseUrl = 'https://pushpad.xyz/api/v1';
 
     /**
      * Default request timeout in seconds.
@@ -42,13 +42,13 @@ class Pushpad
      *
      * @throws ConfigurationException When the authentication token has not been configured.
      */
-    public static function signature_for(string $data): string
+    public static function signatureFor(string $data): string
     {
-        if (!isset(self::$auth_token)) {
-            throw new ConfigurationException('Pushpad::$auth_token must be set before calling signature_for().');
+        if (!isset(self::$authToken)) {
+            throw new ConfigurationException('Pushpad::$authToken must be set before calling signatureFor().');
         }
 
-        return hash_hmac('sha256', $data, self::$auth_token);
+        return hash_hmac('sha256', $data, self::$authToken);
     }
 
     /**
@@ -71,8 +71,8 @@ class Pushpad
      */
     public static function http(): HttpClient
     {
-        if (!isset(self::$auth_token) || self::$auth_token === '') {
-            throw new ConfigurationException('Pushpad::$auth_token must be a non-empty string.');
+        if (!isset(self::$authToken) || self::$authToken === '') {
+            throw new ConfigurationException('Pushpad::$authToken must be a non-empty string.');
         }
 
         if (self::$httpClient instanceof HttpClient) {
@@ -80,8 +80,8 @@ class Pushpad
         }
 
         self::$httpClient = new HttpClient(
-            self::$auth_token,
-            self::$base_url,
+            self::$authToken,
+            self::$baseUrl,
             self::$timeout
         );
 
@@ -102,10 +102,10 @@ class Pushpad
             return $projectId;
         }
 
-        if (self::$project_id !== null) {
-            return self::$project_id;
+        if (self::$projectId !== null) {
+            return self::$projectId;
         }
 
-        throw new ConfigurationException('Pushpad::$project_id must be configured or provided explicitly.');
+        throw new ConfigurationException('Pushpad::$projectId must be configured or provided explicitly.');
     }
 }

@@ -14,7 +14,7 @@ class ResourceTest extends TestCase
     protected function tearDown(): void
     {
         Pushpad::setHttpClient(null);
-        Pushpad::$auth_token = null;
+        Pushpad::$authToken = null;
     }
 
     public function testConstructorFiltersUnknownAttributes(): void
@@ -204,7 +204,7 @@ class ResourceTest extends TestCase
     #[DataProvider('httpMethodProvider')]
     public function testHttpHelpersProxyRequestsToHttpClient(string $method, string $wrapper): void
     {
-        Pushpad::$auth_token = 'token';
+        Pushpad::$authToken = 'token';
         $httpClient = $this->createMock(HttpClient::class);
         $response = [
             'status' => 200,

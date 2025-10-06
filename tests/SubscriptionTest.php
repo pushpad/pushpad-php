@@ -11,15 +11,15 @@ class SubscriptionTest extends TestCase
 {
     protected function setUp(): void
     {
-        Pushpad::$auth_token = 'token';
-        Pushpad::$project_id = 321;
+        Pushpad::$authToken = 'token';
+        Pushpad::$projectId = 321;
     }
 
     protected function tearDown(): void
     {
         Pushpad::setHttpClient(null);
-        Pushpad::$auth_token = null;
-        Pushpad::$project_id = null;
+        Pushpad::$authToken = null;
+        Pushpad::$projectId = null;
     }
 
     public function testFindAllReturnsSubscriptions(): void

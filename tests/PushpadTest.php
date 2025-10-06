@@ -7,27 +7,27 @@ use Pushpad\Pushpad;
 class PushpadTest extends TestCase {
   
   protected function setUp(): void {
-    Pushpad::$auth_token = '5374d7dfeffa2eb49965624ba7596a09';
-    Pushpad::$project_id = 123;
+    Pushpad::$authToken = '5374d7dfeffa2eb49965624ba7596a09';
+    Pushpad::$projectId = 123;
   }
   
   public function testSignature() {
-    $actual = Pushpad::signature_for('user12345');
+    $actual = Pushpad::signatureFor('user12345');
     $expected = '6627820dab00a1971f2a6d3ff16a5ad8ba4048a02b2d402820afc61aefd0b69f';
     $this->assertEquals($actual, $expected);
   }
 
   public function testSignatureRequiresAuthToken(): void
   {
-    Pushpad::$auth_token = null;
+    Pushpad::$authToken = null;
 
     $this->expectException(ConfigurationException::class);
-    Pushpad::signature_for('user123');
+    Pushpad::signatureFor('user123');
   }
 
   public function testHttpRequiresAuthToken(): void
   {
-    Pushpad::$auth_token = null;
+    Pushpad::$authToken = null;
 
     $this->expectException(ConfigurationException::class);
     Pushpad::http();
@@ -35,7 +35,7 @@ class PushpadTest extends TestCase {
 
   public function testResolveProjectIdRequiresConfiguredValue(): void
   {
-    Pushpad::$project_id = null;
+    Pushpad::$projectId = null;
 
     $this->expectException(ConfigurationException::class);
     Pushpad::resolveProjectId(null);

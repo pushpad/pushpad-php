@@ -11,13 +11,13 @@ class ProjectTest extends TestCase
 {
     protected function setUp(): void
     {
-        Pushpad::$auth_token = 'token';
+        Pushpad::$authToken = 'token';
     }
 
     protected function tearDown(): void
     {
         Pushpad::setHttpClient(null);
-        Pushpad::$auth_token = null;
+        Pushpad::$authToken = null;
     }
 
     public function testFindAllReturnsProjects(): void
