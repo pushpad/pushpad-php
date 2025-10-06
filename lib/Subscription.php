@@ -35,7 +35,7 @@ class Subscription extends Resource
     /**
      * @return array<int, self>
      */
-    public static function findAll(?int $projectId = null, array $query = []): array
+    public static function findAll(array $query = [], ?int $projectId = null): array
     {
         $resolvedProjectId = Pushpad::resolveProjectId($projectId);
         $response = self::httpGet("/projects/{$resolvedProjectId}/subscriptions", [
@@ -51,7 +51,7 @@ class Subscription extends Resource
         );
     }
 
-    public static function count(?int $projectId = null, array $query = []): int
+    public static function count(array $query = [], ?int $projectId = null): int
     {
         $resolvedProjectId = Pushpad::resolveProjectId($projectId);
         $response = self::httpGet("/projects/{$resolvedProjectId}/subscriptions", [

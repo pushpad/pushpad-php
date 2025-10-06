@@ -59,7 +59,7 @@ class NotificationTest extends TestCase
 
         Pushpad::setHttpClient($httpClient);
 
-        $notifications = Notification::findAll(null, ['page' => 1]);
+        $notifications = Notification::findAll(['page' => 1]);
 
         $this->assertCount(2, $notifications);
         $this->assertSame('Black Friday Deals', $notifications[0]->title);

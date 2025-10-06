@@ -49,7 +49,7 @@ class Notification extends Resource
     /**
      * @return array<int, self>
      */
-    public static function findAll(?int $projectId = null, array $query = []): array
+    public static function findAll(array $query = [], ?int $projectId = null): array
     {
         $resolvedProjectId = Pushpad::resolveProjectId($projectId);
         $response = self::httpGet("/projects/{$resolvedProjectId}/notifications", [

@@ -53,7 +53,7 @@ class SubscriptionTest extends TestCase
 
         Pushpad::setHttpClient($httpClient);
 
-        $subscriptions = Subscription::findAll(null, ['page' => 2]);
+        $subscriptions = Subscription::findAll(['page' => 2]);
 
         $this->assertCount(2, $subscriptions);
         $this->assertSame('user-123', $subscriptions[0]->uid);
