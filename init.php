@@ -1,5 +1,9 @@
 <?php
 
+require dirname(__FILE__) . '/lib/Exception/PushpadException.php';
+require dirname(__FILE__) . '/lib/Exception/ConfigurationException.php';
+require dirname(__FILE__) . '/lib/Exception/ApiException.php';
+require dirname(__FILE__) . '/lib/Exception/NetworkException.php';
 require dirname(__FILE__) . '/lib/Pushpad.php';
 require dirname(__FILE__) . '/lib/Resource.php';
 require dirname(__FILE__) . '/lib/HttpClient.php';
