@@ -4,161 +4,310 @@
 [![Latest Stable Version](https://poser.pugx.org/pushpad/pushpad-php/v)](//packagist.org/packages/pushpad/pushpad-php)
 [![Total Downloads](https://poser.pugx.org/pushpad/pushpad-php/downloads)](//packagist.org/packages/pushpad/pushpad-php)
 [![License](https://poser.pugx.org/pushpad/pushpad-php/license)](//packagist.org/packages/pushpad/pushpad-php)
- 
-[Pushpad](https://pushpad.xyz) is a service for sending push notifications from websites and web apps. It uses the **Push API**, which is a standard supported by all major browsers (Chrome, Firefox, Opera, Edge, Safari).
 
-The notifications are delivered in real time even when the users are not on your website and you can target specific users or send bulk notifications.
+[Pushpad](https://pushpad.xyz) is a service for sending push notifications from websites and web apps. It uses the **Push API**, which is supported by all major browsers (Chrome, Firefox, Opera, Edge, Safari).
+
+Notifications are delivered in real time even when the users are not on your website and you can target specific users or send bulk notifications.
 
 ## Installation
 
 ### Composer
 
-You can install the bindings via [Composer](http://getcomposer.org/). Run the following command:
+This package requires PHP 8.0+ with the `ext-curl` and `ext-json` extensions.
+
+Install the SDK via [Composer](https://getcomposer.org/):
 
 ```bash
 composer require pushpad/pushpad-php
 ```
 
-To use the bindings, use Composer's autoload:
+Then include Composer's autoloader:
 
 ```php
-require_once('vendor/autoload.php');
+require_once __DIR__ . '/vendor/autoload.php';
 ```
 
-### Manual Installation
+### Manual installation
 
-Download the latest version of this library:
+Clone the repository and require the bootstrap file in your project:
 
-    $ git clone https://github.com/pushpad/pushpad-php.git
-
-Then add this line to your application:
+```bash
+git clone https://github.com/pushpad/pushpad-php.git
+```
 
 ```php
-require_once('path/to/pushpad-php/init.php');
-
+require_once __DIR__ . '/path/to/pushpad-php/init.php';
 ```
 
 ## Getting started
 
-First you need to sign up to Pushpad and create a project there.
+First sign up to Pushpad and create a project.
 
-Then set your authentication credentials:
+Configure the SDK with your credentials before you make any API calls:
 
 ```php
 Pushpad\Pushpad::$authToken = '5374d7dfeffa2eb49965624ba7596a09';
-Pushpad\Pushpad::$projectId = 123; # set it here or pass it as a param to methods later
+Pushpad\Pushpad::$projectId = 123; // set a default project (optional)
 ```
 
-- `authToken` can be found in the user account settings. 
-- `projectId` can be found in the project settings. If your application uses multiple projects, you can pass the `project_id` as a param to methods (e.g. `$notification->deliver_to(user_id, array('project_id' => 123))`).
+- `authToken` can be created in the account settings.
+- `projectId` is shown in the project settings. If you work with multiple projects you can pass a different project id to individual method calls instead of configuring the global default.
 
-## Collecting user subscriptions to push notifications
+## Collecting user subscriptions
 
-You can subscribe the users to your notifications using the Javascript SDK, as described in the [getting started guide](https://pushpad.xyz/docs/pushpad_pro_getting_started).
+Use the JavaScript SDK to subscribe users to push notifications (see the [getting started guide](https://pushpad.xyz/docs/pushpad_pro_getting_started)).
 
-If you need to generate the HMAC signature for the `uid` you can use this helper:
+When you need to sign a `uid`, generate the HMAC signature with:
 
 ```php
-Pushpad\Pushpad::signatureFor($current_user_id);
+$signature = Pushpad\Pushpad::signatureFor((string) $currentUserId);
 ```
 
 ## Sending push notifications
 
+Use `Pushpad\Notification::create()` (or the `send()` alias) to create and send a notification:
+
 ```php
-$notification = new Pushpad\Notification(array(
-  # required, the main content of the notification
-  'body' => "Hello world!",
+$response = Pushpad\Notification::create([
+    // required content
+    'body' => 'Hello world!',
 
-  # optional, the title of the notification (defaults to your project name)
-  'title' => "Website Name",
+    // optional fields
+    'title' => 'Website Name',
+    'target_url' => 'https://example.com',
+    'icon_url' => 'https://example.com/assets/icon.png',
+    'badge_url' => 'https://example.com/assets/badge.png',
+    'image_url' => 'https://example.com/assets/image.png',
+    'ttl' => 604800,
+    'require_interaction' => true,
+    'silent' => false,
+    'urgent' => false,
+    'custom_data' => '123',
+    'actions' => [
+        [
+            'title' => 'My Button 1',
+            'target_url' => 'https://example.com/button-link',
+            'icon' => 'https://example.com/assets/button-icon.png',
+            'action' => 'myActionName',
+        ],
+    ],
+    'starred' => true,
+    'send_at' => (new DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
+    'custom_metrics' => ['examples', 'another_metric'],
 
-  # optional, open this link on notification click (defaults to your project website)
-  'target_url' => "https://example.com",
-
-  # optional, the icon of the notification (defaults to the project icon)
-  'icon_url' => "https://example.com/assets/icon.png",
-
-  # optional, the small icon displayed in the status bar (defaults to the project badge)
-  'badge_url' => "https://example.com/assets/badge.png",
-
-  # optional, an image to display in the notification content
-  # see https://pushpad.xyz/docs/sending_images
-  'image_url' => "https://example.com/assets/image.png",
-
-  # optional, drop the notification after this number of seconds if a device is offline
-  'ttl' => 604800,
-
-  # optional, prevent Chrome on desktop from automatically closing the notification after a few seconds
-  'require_interaction' => true,
-
-  # optional, enable this option if you want a mute notification without any sound
-  'silent' => false,
-
-  # optional, enable this option only for time-sensitive alerts (e.g. incoming phone call)
-  'urgent' => false,
-
-  # optional, a string that is passed as an argument to action button callbacks
-  'custom_data' => "123",
-
-  # optional, add some action buttons to the notification
-  # see https://pushpad.xyz/docs/action_buttons
-  'actions' => array(
-    array(
-      'title' => "My Button 1",
-      'target_url' => "https://example.com/button-link", # optional
-      'icon' => "https://example.com/assets/button-icon.png", # optional
-      'action' => "myActionName" # optional
-    )
-  ),
-
-  # optional, bookmark the notification in the Pushpad dashboard (e.g. to highlight manual notifications)
-  'starred' => true,
-
-  # optional, use this option only if you need to create scheduled notifications (max 5 days)
-  # see https://pushpad.xyz/docs/schedule_notifications
-  'send_at' => strtotime('2016-07-25 10:09'), # use a function like strtotime or time that returns a Unix timestamp
-
-  # optional, add the notification to custom categories for stats aggregation
-  # see https://pushpad.xyz/docs/monitoring
-  'custom_metrics' => array('examples', 'another_metric') # up to 3 metrics per notification
-));
-
-# deliver to a user
-$notification->deliver_to($user_id);
-
-# deliver to a group of users
-$notification->deliver_to($user_ids);
-
-# deliver to some users only if they have a given preference
-# e.g. only $users who have a interested in "events" will be reached
-$notification->deliver_to($users, ["tags" => ["events"]]);
-
-# deliver to segments
-# e.g. any subscriber that has the tag "segment1" OR "segment2"
-$notification->broadcast(["tags" => ["segment1", "segment2"]]);
-
-# you can use boolean expressions 
-# they can include parentheses and the operators !, &&, || (from highest to lowest precedence)
-# https://pushpad.xyz/docs/tags
-$notification->broadcast(["tags" => ["zip_code:28865 && !optout:local_events || friend_of:Organizer123"]]);
-$notification->deliver_to($users, ["tags" => ["tag1 && tag2", "tag3"]]); # equal to "tag1 && tag2 || tag3"
-
-# deliver to everyone
-$notification->broadcast(); 
+    // targeting options
+    'uids' => ['user-1', 'user-2'],
+    'tags' => ['segment1', 'segment2'],
+]);
 ```
 
-You can set the default values for most fields in the project settings. See also [the docs](https://pushpad.xyz/docs/rest_api#notifications_api_docs) for more information about notification fields.
+- Omit `uids` and `tags` to broadcast to everyone.
+- If you set `uids` and some users are not subscribed to notifications, Pushpad ignores them.
+- Use boolean expressions inside `tags` for complex segments (e.g. `'zip_code:28865 && !optout:local_events'`).
+- Scheduled notifications require an ISO 8601 timestamp in `send_at` (as produced by `DateTimeInterface::format(DATE_ATOM)`).
+- You can set default values for most notification fields in the project settings. Refer to the [REST API docs](https://pushpad.xyz/docs/rest_api#notifications_api_docs) for the exhaustive list of options.
 
-If you try to send a notification to a user ID, but that user is not subscribed, that ID is simply ignored.
+The response includes useful information:
 
-The methods above return an array: 
+```php
+// Notification ID
+$notificationId = $response['id'];
 
-- `'id'` is the id of the notification on Pushpad
-- `'scheduled'` is the estimated reach of the notification (i.e. the number of devices to which the notification will be sent, which can be different from the number of users, since a user may receive notifications on multiple devices)
-- `'uids'` (`deliver_to` only) are the user IDs that will be actually reached by the notification because they are subscribed to your notifications. For example if you send a notification to `['uid1', 'uid2', 'uid3']`, but only `'uid1'` is subscribed, you will get `['uid1']` in response. Note that if a user has unsubscribed after the last notification sent to him, he may still be reported for one time as subscribed (this is due to the way the W3C Push API works).
-- `'send_at'` is present only for scheduled notifications. The fields `'scheduled'` and `'uids'` are not available in this case.
+// Estimated number of devices that will receive the notification
+// Not available for notifications that use send_at
+$estimatedReach = $response['scheduled'];
+
+// Available only if you specify some user IDs (uids) in the request:
+// it indicates which of those users are subscribed to notifications.
+// Not available for notifications that use send_at
+$reachedUids = $response['uids'];
+
+// The time when the notification will be sent.
+// Available for notifications that use send_at
+$scheduledAt = $response['send_at'];
+```
+
+## Getting push notification data
+
+Fetch a single notification and inspect its attributes:
+
+```php
+$notification = Pushpad\Notification::find(42);
+
+echo $notification->title; // "Foo Bar"
+echo $notification->target_url; // "https://example.com"
+echo $notification->ttl; // 604800
+echo $notification->created_at; // ISO 8601 string
+echo $notification->successfully_sent_count; // 4
+echo $notification->opened_count; // 2
+
+// ... and many other attributes
+print_r($notification->toArray());
+```
+
+List notifications for a project (pagination supported through the `page` query parameter):
+
+```php
+$notifications = Pushpad\Notification::findAll(['page' => 1]);
+
+foreach ($notifications as $item) {
+    printf("Notification %d: %s\n", $item->id, $item->title);
+}
+```
+
+Pass the project id as the second argument when you prefer not to rely on the globally configured `Pushpad\Pushpad::$projectId`:
+
+```
+Pushpad\Notification::findAll([], projectId: 456);
+```
+
+If you need to refresh a previously loaded notification, call `$notification->refresh()` to hydrate the latest data from the API.
+
+## Scheduled notifications
+
+Create a notification that will be sent later:
+
+```php
+Pushpad\Notification::create([
+    'body' => 'This notification will be sent after 60 seconds',
+    'send_at' => (new DateTimeImmutable('+60 seconds'))->format(DATE_ATOM),
+]);
+```
+
+Cancel a scheduled notification when it is still pending:
+
+```php
+$notification = Pushpad\Notification::find(5);
+$notification->cancel();
+```
+
+## Getting subscription count
+
+Retrieve the number of subscriptions associated with a project, optionally filtered by user IDs or tags:
+
+```php
+$total = Pushpad\Subscription::count();
+$byUser = Pushpad\Subscription::count(['uids' => ['user1']]);
+$byTags = Pushpad\Subscription::count(['tags' => ['sports && travel']]);
+$combined = Pushpad\Subscription::count(['uids' => ['user1'], 'tags' => ['sports && travel']], 5);
+```
+
+The second argument lets you override the project id if you did not configure `Pushpad\Pushpad::$projectId` or you need to switch project on the fly.
+
+## Getting push subscription data
+
+Fetch subscriptions with optional filters and pagination:
+
+```php
+$subscriptions = Pushpad\Subscription::findAll(['tags' => ['sports'], 'page' => 2]);
+
+foreach ($subscriptions as $subscription) {
+    echo $subscription->id . PHP_EOL;
+    // ...
+}
+```
+
+Load a specific subscription when you already know its id:
+
+```php
+$subscription = Pushpad\Subscription::find(123);
+
+echo $subscription->id;
+echo $subscription->endpoint;
+echo $subscription->uid;
+echo $subscription->tags;
+echo $subscription->last_click_at;
+echo $subscription->created_at;
+
+// ... and many other attributes
+print_r($subscription->toArray());
+```
+
+## Updating push subscription data
+
+Although tags and user IDs are usually managed from the JavaScript SDK, you can also update them from server:
+
+```php
+$subscriptions = Pushpad\Subscription::findAll(['uids' => ['user1']]);
+
+foreach ($subscriptions as $subscription) {
+    $tags = $subscription->tags ?? [];
+    $tags[] = 'another_tag';
+
+    $subscription->update([
+        'uid' => 'myuser1',
+        'tags' => array_values(array_unique($tags)),
+    ]);
+}
+```
+
+## Importing push subscriptions
+
+To import existing subscriptions or seed test data use `Pushpad\Subscription::create()`:
+
+```php
+$subscription = Pushpad\Subscription::create([
+    'endpoint' => 'https://example.com/push/f7Q1Eyf7EyfAb1',
+    'p256dh' => 'BCQVDTlYWdl05lal3lG5SKr3VxTrEWpZErbkxWrzknHrIKFwihDoZpc_2sH6Sh08h-CacUYI-H8gW4jH-uMYZQ4=',
+    'auth' => 'cdKMlhgVeSPzCXZ3V7FtgQ==',
+    'uid' => 'exampleUid',
+    'tags' => ['exampleTag1', 'exampleTag2'],
+]);
+```
+
+Typically subscriptions are collected from the browser using the [JavaScript SDK](https://pushpad.xyz/docs/javascript_sdk_reference); server-side creation should be reserved for migrations and special workflows.
+
+## Deleting push subscriptions
+
+Delete subscriptions programmatically (use with care, the operation is irreversible):
+
+```php
+$subscription = Pushpad\Subscription::find(123);
+$subscription->delete();
+```
+
+## Managing projects
+
+Projects can also be managed via the API for automation use cases:
+
+```php
+$project = Pushpad\Project::create([
+    'sender_id' => 123,
+    'name' => 'My project',
+    'website' => 'https://example.com',
+    'icon_url' => 'https://example.com/icon.png',
+    'badge_url' => 'https://example.com/badge.png',
+    'notifications_ttl' => 604800,
+    'notifications_require_interaction' => false,
+    'notifications_silent' => false,
+]);
+
+$projects = Pushpad\Project::findAll();
+
+$project = Pushpad\Project::find(123);
+$project->update(['name' => 'The New Project Name']);
+$project->delete();
+```
+
+## Managing senders
+
+Senders hold the VAPID credentials used for Web Push:
+
+```php
+$sender = Pushpad\Sender::create([
+    'name' => 'My sender',
+    // omit the keys below to let Pushpad generate them automatically
+    // 'vapid_private_key' => '-----BEGIN EC PRIVATE KEY----- ...',
+    // 'vapid_public_key' => '-----BEGIN PUBLIC KEY----- ...',
+]);
+
+$senders = Pushpad\Sender::findAll();
+
+$sender = Pushpad\Sender::find(987);
+$sender->update(['name' => 'The New Sender Name']);
+$sender->delete();
+```
 
 ## License
 
 The library is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
