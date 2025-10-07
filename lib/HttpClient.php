@@ -20,11 +20,11 @@ class HttpClient
      * @param string $authToken API token granted by Pushpad.
      * @param string $baseUrl Base endpoint for the REST API.
      * @param int $timeout Default timeout in seconds for requests.
-     * @param string|null $userAgent Forces a custom User-Agent header when provided.
+     * @param string $userAgent Forces a custom User-Agent header when provided.
      *
      * @throws \InvalidArgumentException When the authentication token is empty.
      */
-    public function __construct(string $authToken, string $baseUrl = 'https://pushpad.xyz/api/v1', int $timeout = 30, ?string $userAgent = null)
+    public function __construct(string $authToken, string $baseUrl = 'https://pushpad.xyz/api/v1', int $timeout = 30, string $userAgent = 'pushpad-php')
     {
         if ($authToken === '') {
             throw new \InvalidArgumentException('Auth token must be a non-empty string.');
@@ -33,7 +33,7 @@ class HttpClient
         $this->authToken = $authToken;
         $this->baseUrl = rtrim($baseUrl, '/');
         $this->timeout = $timeout;
-        $this->userAgent = $userAgent ?? 'pushpad-php-sdk/1.0';
+        $this->userAgent = $userAgent;
     }
 
     /**

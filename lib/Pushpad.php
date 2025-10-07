@@ -82,10 +82,13 @@ class Pushpad
             return self::$httpClient;
         }
 
+        $userAgent = sprintf('pushpad-php/%s', self::VERSION);
+
         self::$httpClient = new HttpClient(
             self::$authToken,
             self::$baseUrl,
-            self::$timeout
+            self::$timeout,
+            $userAgent
         );
 
         return self::$httpClient;
