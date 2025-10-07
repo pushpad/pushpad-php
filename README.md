@@ -13,7 +13,7 @@ Notifications are delivered in real time even when the users are not on your web
 
 ### Composer
 
-This package requires PHP 8.0+ with the `ext-curl` and `ext-json` extensions.
+This package requires PHP 8.0+ with the `curl` extension.
 
 Install the SDK via [Composer](https://getcomposer.org/):
 

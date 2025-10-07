@@ -18,8 +18,7 @@
   ],
   "require": {
     "php": ">=8.0.0",
-    "ext-curl": "*",
-    "ext-json": "*"
+    "ext-curl": "*"
   },
   "autoload": {
     "psr-4": { "Pushpad\\" : "lib/" }
