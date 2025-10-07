@@ -105,7 +105,8 @@ $response = Pushpad\Notification::create([
 - If you set `uids` and some users are not subscribed to notifications, Pushpad ignores them.
 - Use boolean expressions inside `tags` for complex segments (e.g. `'zip_code:28865 && !optout:local_events'`).
 - Scheduled notifications require an ISO 8601 timestamp in `send_at` (as produced by `DateTimeInterface::format(DATE_ATOM)`).
-- You can set default values for most notification fields in the project settings. Refer to the [REST API docs](https://pushpad.xyz/docs/rest_api#notifications_api_docs) for the exhaustive list of options.
+- You can set default values for most notification fields in the project settings.
+- Refer to the [REST API docs](https://pushpad.xyz/docs/rest_api#notifications_api_docs) for more details about the notification fields and their usage.
 
 The response includes useful information:
 
