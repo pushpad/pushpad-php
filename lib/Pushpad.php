@@ -11,6 +11,9 @@ use Pushpad\Exception\ConfigurationException;
  */
 class Pushpad
 {
+    /** Current library version. */
+    public const VERSION = '3.0.0';
+
     /**
      * API token used to authenticate every request performed by the SDK.
      */
