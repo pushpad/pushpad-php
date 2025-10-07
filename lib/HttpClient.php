@@ -17,6 +17,8 @@ class HttpClient
     private string $userAgent;
 
     /**
+     * Initializes the HTTP client with some options.
+     *
      * @param string $authToken API token granted by Pushpad.
      * @param string $baseUrl Base endpoint for the REST API.
      * @param int $timeout Default timeout in seconds for requests.
@@ -39,6 +41,8 @@ class HttpClient
     /**
      * Executes an HTTP request against the Pushpad API.
      *
+     * @param string $method HTTP verb used for the request.
+     * @param string $path Relative path appended to the base URL.
      * @param array{query?:array<string,mixed>, json?:mixed, body?:string, headers?:array<int,string>, timeout?:int} $options
      * @return array{status:int, body:mixed, headers:array<string, array<int, string>>, raw_body:?string}
      *
@@ -115,6 +119,8 @@ class HttpClient
     }
 
     /**
+     * Produces the base headers required for API requests.
+     *
      * @return list<string>
      */
     private function defaultHeaders(): array
@@ -128,7 +134,9 @@ class HttpClient
     /**
      * Creates an absolute URL including any query string parameters.
      *
+     * @param string $path Request path relative to the base URL.
      * @param array<string, mixed> $query
+     * @return string
      */
     private function buildUrl(string $path, array $query): string
     {
@@ -144,6 +152,8 @@ class HttpClient
     }
 
     /**
+     * Builds a URL-encoded query string from the provided parameters.
+     *
      * @param array<string, mixed> $query
      * @return string
      */
@@ -174,6 +184,7 @@ class HttpClient
     /**
      * Decodes the JSON body when possible, returning the raw string otherwise.
      *
+     * @param string $rawBody Raw body returned by cURL.
      * @return mixed
      */
     private function decode(string $rawBody)
