@@ -214,6 +214,7 @@ Load a specific subscription when you already know its id:
 $subscription = Pushpad\Subscription::find(123);
 
 echo $subscription->id;
+echo $subscription->project_id;
 echo $subscription->endpoint;
 echo $subscription->uid;
 echo $subscription->tags;

@@ -90,6 +90,7 @@ class SubscriptionTest extends TestCase
                 'status' => 200,
                 'body' => [
                     'id' => 7,
+                    'project_id' => 321,
                     'endpoint' => 'https://example.com/push/f7Q1Eyf',
                     'uid' => 'user-123',
                     'tags' => ['tag1'],
@@ -169,6 +170,7 @@ class SubscriptionTest extends TestCase
                 'status' => 200,
                 'body' => [
                     'id' => 7,
+                    'project_id' => 321,
                     'uid' => 'user-updated',
                     'endpoint' => 'https://example.com/push/f7Q1Eyf',
                 ],

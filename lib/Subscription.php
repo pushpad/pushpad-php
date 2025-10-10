@@ -11,6 +11,7 @@ class Subscription extends Resource
 {
     protected const ATTRIBUTES = [
         'id',
+        'project_id',
         'endpoint',
         'p256dh',
         'auth',
@@ -23,6 +24,7 @@ class Subscription extends Resource
 
     protected const READ_ONLY_ATTRIBUTES = [
         'id',
+        'project_id',
         'last_click_at',
         'created_at',
         'project_id',
@@ -58,7 +60,7 @@ class Subscription extends Resource
         $items = $response['body'];
 
         return array_map(
-            fn (array $item) => new self(self::injectProjectId($item, $resolvedProjectId)),
+            fn (array $item) => new self($item),
             $items
         );
     }
@@ -104,7 +106,7 @@ class Subscription extends Resource
         self::ensureStatus($response, 200);
         $data = $response['body'];
 
-        return new self(self::injectProjectId($data, $resolvedProjectId));
+        return new self($data);
     }
 
     /**
@@ -124,7 +126,7 @@ class Subscription extends Resource
         self::ensureStatus($response, 201);
         $data = $response['body'];
 
-        return new self(self::injectProjectId($data, $resolvedProjectId));
+        return new self($data);
     }
 
     /**
@@ -138,7 +140,7 @@ class Subscription extends Resource
         $response = self::httpGet("/projects/{$project}/subscriptions/{$this->requireId()}");
         self::ensureStatus($response, 200);
         $data = $response['body'];
-        $this->setAttributes(self::injectProjectId($data, $project));
+        $this->setAttributes($data);
         return $this;
     }
 
@@ -158,7 +160,7 @@ class Subscription extends Resource
         ]);
         self::ensureStatus($response, 200);
         $data = $response['body'];
-        $this->setAttributes(self::injectProjectId($data, $project));
+        $this->setAttributes($data);
         return $this;
     }
 
@@ -181,15 +183,11 @@ class Subscription extends Resource
      */
     private function determineProjectId(?int $projectId = null): int
     {
-        if ($projectId !== null) {
-            return $projectId;
-        }
-
         if (isset($this->attributes['project_id'])) {
             return (int) $this->attributes['project_id'];
         }
 
-        return Pushpad::resolveProjectId(null);
+        return Pushpad::resolveProjectId($projectId);
     }
 
     /**
@@ -197,12 +195,4 @@ class Subscription extends Resource
      * @param int $projectId
      * @return array<string, mixed>
      */
-    private static function injectProjectId(array $data, int $projectId): array
-    {
-        if (!isset($data['project_id'])) {
-            $data['project_id'] = $projectId;
-        }
-
-        return $data;
-    }
 }
